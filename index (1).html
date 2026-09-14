@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto Final TICS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blueprint: #0e2338;
+    --blueprint-deep: #081627;
+    --grid-line: rgba(255,255,255,0.07);
+    --grid-line-strong: rgba(255,255,255,0.14);
+    --copper: #e0954f;
+    --copper-soft: #f2b57c;
+    --ink: #eaf1f7;
+    --ink-muted: #93a9bf;
+    --trace: #2e5a82;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--blueprint);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+
+  h1, h2, .mono-tag{ font-family: 'Space Grotesk', sans-serif; }
+
+  a{ color: var(--copper-soft); }
+
+  :focus-visible{
+    outline: 2px solid var(--copper);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8vh 8vw 6vh;
+    position: relative;
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+
+  .hero::before{
+    content: "";
+    position: absolute;
+    top: 32px; left: 32px; right: 32px; bottom: 32px;
+    border: 1px solid var(--grid-line-strong);
+    pointer-events: none;
+  }
+
+  .hero-content{
+    max-width: 100%;
+  }
+
+  .kicker{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: var(--copper-soft);
+    margin: 0 0 1.4rem;
+  }
+
+  .hero h1{
+    font-size: clamp(2.4rem, 7vw, 5rem);
+    line-height: 1.04;
+    font-weight: 700;
+    margin: 0 0 1.2rem;
+    max-width: 16ch;
+  }
+
+  .hero p{
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: var(--ink-muted);
+    max-width: 52ch;
+    margin: 0 0 2.2rem;
+  }
+
+  .hero-actions{
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+
+  .jump-nav{
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 2.4rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--grid-line-strong);
+  }
+
+  .jump-link{
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 10px 16px;
+    border: 1px solid var(--trace);
+    border-radius: 3px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.92rem;
+    font-weight: 500;
+    background: rgba(255,255,255,0.02);
+  }
+  .jump-link .tag{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--copper-soft);
+  }
+
+  .btn{
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .btn-primary{
+    background: var(--copper);
+    color: var(--blueprint-deep);
+  }
+  .btn-ghost{
+    border-color: var(--grid-line-strong);
+    color: var(--ink);
+  }
+
+  .hero-meta{
+    position: absolute;
+    bottom: 48px; right: 8vw;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    text-align: right;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  /* ---------- SPINE / MÓDULOS ---------- */
+  .board{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 8vh 8vw 10vh;
+    position: relative;
+  }
+
+  .spine{
+    position: absolute;
+    left: 8vw;
+    top: 8vh;
+    bottom: 10vh;
+    width: 1px;
+    background: var(--trace);
+  }
+
+  .module{
+    position: relative;
+    padding-left: 52px;
+    margin-bottom: 9vh;
+  }
+  .module:last-child{ margin-bottom: 0; }
+
+  .module-node{
+    position: absolute;
+    left: -1px;
+    top: 4px;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--blueprint);
+    border: 2px solid var(--copper);
+    transform: translateX(-50%);
+  }
+
+  .module-tag{
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--copper-soft);
+    border: 1px solid var(--trace);
+    border-radius: 3px;
+    padding: 3px 8px;
+    margin-bottom: 14px;
+  }
+
+  .module h2{
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+
+  .module .body-text{
+    color: var(--ink-muted);
+    max-width: 62ch;
+    font-size: 1.02rem;
+  }
+
+  .editable{
+    border: 1px dashed var(--trace);
+    border-radius: 6px;
+    padding: 18px 20px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .media-frame{
+    margin-top: 16px;
+    border: 1px solid var(--trace);
+    border-radius: 6px;
+    aspect-ratio: 16/9;
+    max-width: 640px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.02);
+  }
+  .media-frame img, .media-frame video{
+    width: 100%; height: 100%; object-fit: cover; border-radius: 5px;
+  }
+
+  .audio-frame{
+    margin-top: 16px;
+    border: 1px solid var(--trace);
+    border-radius: 6px;
+    padding: 22px;
+    max-width: 640px;
+    background: rgba(255,255,255,0.02);
+  }
+  .audio-frame audio{ width: 100%; }
+
+  .doc-frame{
+    margin-top: 16px;
+    border: 1px solid var(--trace);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 720px;
+  }
+  .doc-frame iframe{
+    width: 100%; height: 480px; border: none; display: block;
+  }
+  .doc-link{
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.92rem;
+  }
+
+  .team{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 8vw 8vh;
+    border-top: 1px solid var(--grid-line-strong);
+    padding-top: 6vh;
+  }
+
+  .team-label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--copper-soft);
+    margin: 0 0 16px;
+  }
+
+  .team-list{
+    list-style: none;
+    display: flex; flex-wrap: wrap; gap: 12px;
+    padding: 0; margin: 0;
+  }
+  .team-list li{
+    font-size: 0.98rem;
+    border: 1px solid var(--trace);
+    border-radius: 20px;
+    padding: 9px 18px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  footer{
+    border-top: 1px solid var(--grid-line-strong);
+    padding: 28px 8vw;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 640px){
+    .hero-meta{ position: static; margin-top: 40px; text-align: left; }
+    .spine{ left: 6vw; }
+    .board{ padding-left: 6vw; padding-right: 6vw; }
+    .module{ padding-left: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-content">
+    <p class="kicker">Proyecto Final &middot; TICS 2026</p>
+    <!-- EDITA AQUÍ: nombre del proyecto -->
+    <h1>CentinelaIRTRA</h1>
+    <!-- EDITA AQUÍ: descripción corta -->
+    <p>Sistema de seguridad inteligente para zonas de abordaje: protege el acceso a una atracción del parque IRTRA Petapa detectando movimiento y cercanía no autorizada, alertando con luces y sonido en tiempo real, y ahorrando energía al encender la señalización solo cuando oscurece.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#podcast">Ver el proyecto</a>
+      <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noopener">Repositorio en GitHub</a>
+    </div>
+    <nav class="jump-nav" aria-label="Secciones del proyecto">
+      <a class="jump-link" href="#podcast"><span class="tag">MIC1</span> Podcast</a>
+      <a class="jump-link" href="#documento"><span class="tag">DOC1</span> Documento</a>
+      <a class="jump-link" href="#circuito"><span class="tag">U1</span> Circuito</a>
+      <a class="jump-link" href="#infografia"><span class="tag">LED1</span> Infografía</a>
+    </nav>
+  </div>
+  <div class="hero-meta">
+    <span>Colegio Capouilliez</span>
+    <span>TICS &middot; 2026</span>
+  </div>
+</section>
+
+<div class="board">
+  <div class="spine"></div>
+
+  <article class="module" id="podcast">
+    <span class="module-node"></span>
+    <span class="module-tag">MIC1</span>
+    <h2>Podcast</h2>
+    <div class="body-text">
+      <!-- EDITA AQUÍ: descripción corta del podcast -->
+      <p>Escucha el podcast donde explicamos el proyecto con más detalle.</p>
+      <div class="audio-frame">
+        <!-- EDITA AQUÍ: reemplaza "podcast.mp3" por el archivo real -->
+        <audio controls>
+          <source src="podcast.mp3" type="audio/mpeg">
+          Tu navegador no puede reproducir audio.
+        </audio>
+      </div>
+    </div>
+  </article>
+
+  <article class="module" id="documento">
+    <span class="module-node"></span>
+    <span class="module-tag">DOC1</span>
+    <h2>Documento</h2>
+    <div class="body-text">
+      <!-- EDITA AQUÍ: descripción corta del documento -->
+      <p>Consulta el informe completo del proyecto.</p>
+      <div class="doc-frame">
+        <!-- EDITA AQUÍ: reemplaza "documento.pdf" por el archivo real -->
+        <iframe src="documento.pdf" title="Documento del proyecto"></iframe>
+      </div>
+      <a class="doc-link" href="documento.pdf" target="_blank" rel="noopener">Abrir documento en una pestaña nueva &rarr;</a>
+    </div>
+  </article>
+
+  <article class="module" id="circuito">
+    <span class="module-node"></span>
+    <span class="module-tag">U1</span>
+    <h2>Circuito</h2>
+    <div class="body-text">
+      <!-- EDITA AQUÍ: descripción corta del circuito -->
+      <p>Diagrama del circuito utilizado en el proyecto.</p>
+      <div class="media-frame">
+        <!-- EDITA AQUÍ: reemplaza este bloque por tu imagen real -->
+        <img src="circuito.png" alt="Diagrama del circuito" onerror="this.parentElement.innerHTML='Coloca aquí la imagen de tu circuito'">
+      </div>
+    </div>
+  </article>
+
+  <article class="module" id="infografia">
+    <span class="module-node"></span>
+    <span class="module-tag">LED1</span>
+    <h2>Infografía</h2>
+    <div class="body-text">
+      <!-- EDITA AQUÍ: descripción corta de la infografía -->
+      <p>Consulta la infografía del proyecto.</p>
+      <div class="doc-frame">
+        <!-- EDITA AQUÍ: reemplaza "infografia.pdf" por el archivo real -->
+        <iframe src="infografia.pdf" title="Infografía del proyecto"></iframe>
+      </div>
+      <a class="doc-link" href="infografia.pdf" target="_blank" rel="noopener">Abrir infografía en una pestaña nueva &rarr;</a>
+    </div>
+  </article>
+</div>
+
+<section class="team">
+  <p class="team-label">Equipo</p>
+  <ul class="team-list">
+    <li>Juan Rodríguez</li>
+    <li>Alejandra Morales</li>
+    <li>Ana Valvert</li>
+    <li>Diego Salazar</li>
+  </ul>
+</section>
+
+<footer>
+  <span>&copy; 2026 &middot; Proyecto Final TICS</span>
+  <span>Colegio Capouilliez</span>
+</footer>
+
+</body>
+</html>
